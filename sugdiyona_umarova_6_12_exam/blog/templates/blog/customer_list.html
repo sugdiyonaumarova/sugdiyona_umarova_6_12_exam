@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer List</title>
+</head>
+<body>
+    <h1>Customer List</h1>
+
+    <div class="actions">
+        <form method="get" class="search-form">
+            <input type="text" name="search" value="{{ search_query }}" placeholder="Search customers..." />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr>
+                <td>{{ customer.id }}</td>
+                <td><a href="{% url 'customer_detail' customer.id %}">{{ customer.name }}</a></td>
+                <td>{{ customer.email }}</td>
+                <td>
+                    {% if customer.address %}
+                        {{ customer.address }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'customer_edit' customer.id %}">Edit</a>
+                    <a href="{% url 'customer_delete' customer.id %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if customers.has_previous %}
+                <a href="?page=1&search={{ search_query }}">&laquo; First</a>
+                <a href="?page={{ customers.previous_page_number }}&search={{ search_query }}">Previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ customers.number }} of {{ customers.paginator.num_pages }}
+            </span>
+
+            {% if customers.has_next %}
+                <a href="?page={{ customers.next_page_number }}&search={{ search_query }}">Next</a>
+                <a href="?page={{ customers.paginator.num_pages }}&search={{ search_query }}">Last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</body>
+</html>
